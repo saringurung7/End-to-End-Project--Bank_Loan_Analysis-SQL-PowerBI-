@@ -1,0 +1,179 @@
+BANK LOAN REPORT (QUERY DOCUMENT)
+KPI's:
+1. Total Loan Applications:
+select count(id) as total_loan_application from bank_loan_data;
+ 
+2. MTD Loan application
+select count(id) as MTD_total_loan_application from bank_loan_data  
+where month(str_to_date(trim(issue_date),'%d-%m-%Y')) = 12 
+and year(str_to_date(trim(issue_date),'%d-%m-%Y'))= 2021;
+ 
+3. Previous MTD (PMTD) Loan Application
+select count(id) as PMTD_total_loan_application from bank_loan_data
+where month(str_to_date(trim(issue_date),'%d-%m-%Y')) = 11 
+and year(str_to_date(trim(issue_date),'%d-%m-%Y'))= 2021;
+ 
+4. Total Funded Amount
+select sum(loan_amount) as total_funded_amount from bank_loan_data;
+ 
+5. MTD Funded Amount
+select sum(loan_amount) as MTD_total_funded_amount from bank_loan_data
+where month(str_to_date(trim(issue_date),'%d-%m-%Y')) = 12 
+and year(str_to_date(trim(issue_date),'%d-%m-%Y'))= 2021;
+ 
+6. Previous MTD (PMTD) Funded Amount
+select sum(loan_amount) as PMTD_total_funded_amount from bank_loan_data
+where month(str_to_date(trim(issue_date),'%d-%m-%Y')) = 11 
+and year(str_to_date(trim(issue_date),'%d-%m-%Y'))= 2021;
+ 
+7. Total Amount Received
+select sum(total_payment) as total_received_amount from bank_loan_data;
+ 
+8.  MTD Amount Received
+select sum(total_payment) as MTD_total_received_amount from bank_loan_data
+where month(str_to_date(trim(issue_date),'%d-%m-%Y')) = 12 
+and year(str_to_date(trim(issue_date),'%d-%m-%Y'))= 2021;
+ 
+9. Previous MTD (PMTD) Amount Received
+select sum(total_payment) as PMTD_total_received_amount from bank_loan_data
+where month(str_to_date(trim(issue_date),'%d-%m-%Y')) = 11 
+and year(str_to_date(trim(issue_date),'%d-%m-%Y'))= 2021;
+ 
+10. Average Interest Rate
+select avg(int_rate) * 100 as avg_int_rate from bank_loan_data;
+ 
+11. MTD Average Interest Rate
+select avg(int_rate) * 100 as MTD_avg_int_rate from bank_loan_data
+where month(str_to_date(trim(issue_date),'%d-%m-%Y')) = 12 
+and year(str_to_date(trim(issue_date),'%d-%m-%Y'))= 2021;
+ 
+12. PMTD Average Interest Rate
+select avg(int_rate) * 100 as PMTD_avg_int_rate from bank_loan_data
+where month(str_to_date(trim(issue_date),'%d-%m-%Y')) = 11 
+and year(str_to_date(trim(issue_date),'%d-%m-%Y'))= 2021;
+ 
+13. Average Debt to Income Ratio DTI
+select avg(dti) * 100 as avg_dti from bank_loan_data;
+ 
+14. MTD Average Debt to Income Ratio DTI
+select avg(dti) * 100 as avg_dti from bank_loan_data
+where month(str_to_date(trim(issue_date),'%d-%m-%Y')) = 12 
+and year(str_to_date(trim(issue_date),'%d-%m-%Y'))= 2021;
+ 
+15. PMTD Average Debt to Income Ratio DTI
+select avg(dti) * 100 as PMTD_avg_dti from bank_loan_data
+where month(str_to_date(trim(issue_date),'%d-%m-%Y')) = 11 
+and year(str_to_date(trim(issue_date),'%d-%m-%Y'))= 2021;
+ 
+GOOD LOAN ISSUED
+1. Good loan percentage
+select
+(count(case when loan_status = 'Fully Paid' or loan_status='Current' then id end) / count(id) *100)  as good_loan_percentage
+from bank_loan_data;
+ 
+2. Good loan application
+select count(id) as good_loan_application from bank_loan_data
+where loan_status in ('Current','Fully Paid');
+ 
+3. Good loan funded amount
+select sum(loan_amount) as good_loan_funded_amount from bank_loan_data
+where loan_status in ('Current','Fully Paid');
+ 
+4. Good loan total received amount
+select sum(total_payment) as good_loan_received_amount from bank_loan_data
+where loan_status in ('Current','Fully Paid');
+ 
+BAD LAON ISSUED
+1. Bad laon percentage
+select
+(count(case when loan_status = 'Charged Off' then id end) / count(id) *100) as bad_loan_percentage
+from bank_loan_data;
+ 
+2. Bad loan application
+select count(id) as bad_loan_application from bank_loan_data
+where loan_status = 'Charged Off';
+ 
+3. Bad loan funded amount
+select sum(loan_amount) as bad_loan_funded_amount from bank_loan_data
+where loan_status = 'Charged Off';
+ 
+4. Bad loan total received amount
+select sum(total_payment) as bad_loan_received_amount from bank_loan_data
+where loan_status = 'Charged Off';
+ 
+LOAN STATUS
+select loan_status
+, count(id) as loan_count
+, sum(total_payment) as total_amt_received
+, sum(loan_amount) as total_funded_amt
+, avg(int_rate) *100 as int_Rate
+, avg(dti) *100 as dti
+from bank_loan_data
+group by loan_status
+order by loan_count desc;
+ 
+LOAN STATUS MTD wise
+select loan_status
+, sum(total_payment) as MTD_total_amt_received
+, sum(loan_amount) as MTD_total_funded_amt
+from bank_loan_data
+where month(str_to_date(trim(issue_date),'%d-%m-%Y')) = 12
+group by loan_status;
+ 
+METRICS of Total loan application, Total Funded Amount, Total Amount Received
+1. Monthly trends analysis by issue date
+select month(str_to_date(trim(issue_date),'%d-%m-%Y')) as month_number
+, monthname(str_to_date(trim(issue_date),'%d-%m-%Y')) as month_name
+, count(id) as total_loan_application
+, sum(loan_amount) as total_funded_amt
+, sum(total_payment) as total_amt_received
+from bank_loan_data
+group by month(str_to_date(trim(issue_date),'%d-%m-%Y'))
+, monthname(str_to_date(trim(issue_date),'%d-%m-%Y'))
+order by month(str_to_date(trim(issue_date),'%d-%m-%Y'));
+ 
+2. Regional analysis by state
+select address_state as state
+, count(id) as total_loan_application
+, sum(loan_amount) as total_funded_amt
+, sum(total_payment) as total_amt_received
+from bank_loan_data
+group by state
+order by state;
+ 
+3. Loan term analysis
+select term
+, count(id) as total_loan_application
+, sum(loan_amount) as total_funded_amt
+, sum(total_payment) as total_amt_received
+from bank_loan_data
+group by term
+order by term;
+ 
+4. Employee length analysis
+select emp_length
+, count(id) as total_loan_application
+, sum(loan_amount) as total_funded_amt
+, sum(total_payment) as total_amt_received
+from bank_loan_data
+group by emp_length
+order by emp_length;
+ 
+5. Loan purpose breakdown analysis
+select purpose as loan_purpose
+, count(id) as total_loan_application
+, sum(loan_amount) as total_funded_amt
+, sum(total_payment) as total_amt_received
+from bank_loan_data
+group by purpose
+order by purpose;
+ 
+6. Home Ownership analysis
+select home_ownership
+, count(id) as total_loan_application
+, sum(loan_amount) as total_funded_amt
+, sum(total_payment) as total_amt_received
+from bank_loan_data
+group by home_ownership
+order by home_ownership;
+ 
