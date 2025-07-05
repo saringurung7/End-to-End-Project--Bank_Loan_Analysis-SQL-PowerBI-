@@ -1,6 +1,8 @@
 
 # Bank Loan Analysis
 
+![image](https://github.com/user-attachments/assets/752bfdba-5024-4669-a6be-c9e6f19f6217)
+
 ## Problem Statement
 
 The dashboard provided stakeholders with actionable insights into the bank's loan portfolio by tracking key performance indicators (KPIs) and analyzing loan quality, repayment trends, and borrower demographics. It helped identify monthly trends in loan demand, funding, and repayment consistency, allowing for improved cash flow and risk management. By differentiating between "Good" and "Bad" loans, stakeholders could assess overall loan quality and make informed decisions to enhance portfolio health. Additionally, regional and demographic breakdowns, such as loan distribution by state, loan purpose, and borrower profiles, enabled targeted strategies for high-potential regions and borrower segments. 
@@ -256,8 +258,4 @@ KPI's:
  
 ![image](https://github.com/user-attachments/assets/6d289fb2-d95b-469b-963d-fe8718f5f059)
  
- # Report Snapshot (Power BI DESKTOP)
-
- ![image](https://github.com/user-attachments/assets/752bfdba-5024-4669-a6be-c9e6f19f6217)
-
 
